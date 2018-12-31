@@ -1,0 +1,21 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t fbobg/react-test -f ./client/Dockerfile.dev ./client
+
+  scripts:
+  - docker run fbobg/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t fbobg/multi-client ./client
+  - docker build -t fbobg/multi-nginx ./nginx
+  - docker build -t fbobg/multi-server ./server
+  - docker build -t fbobg/multi-worker ./worker
+
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" -password-stdin
+  - docker push fbobg/multi-client
+  - docker push fbobg/multi-nginx 
+  - docker push fbobg/multi-server
+  - docker push fbobg/multi-worker
