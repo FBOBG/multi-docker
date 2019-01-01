@@ -5,7 +5,7 @@ services:
 before_install:
   - docker build -t fbobg/react-test -f ./client/Dockerfile.dev ./client
 
-  scripts:
+script:
   - docker run fbobg/react-test npm test -- --coverage
 
 after_success:
